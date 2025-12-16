@@ -43,15 +43,15 @@ cd src/Fritz.Api
 dotnet run
 ```
 
-The API will start on `http://localhost:5000`
+The API will start on `https://localhost:7169` (HTTPS) and `http://localhost:5121` (HTTP)
 
-#### 2. Update Client Configuration
+#### 2. Client Configuration
 
-Edit `src/Fritz.Client/wwwroot/appsettings.json`:
+The client is pre-configured in `src/Fritz.Client/wwwroot/appsettings.json`:
 
 ```json
 {
-  "ApiBaseUrl": "http://localhost:5000",
+  "ApiBaseUrl": "https://localhost:7169",
   "ApiKey": "fritz-game-api-key-2024"
 }
 ```
@@ -60,10 +60,10 @@ Edit `src/Fritz.Client/wwwroot/appsettings.json`:
 
 ```bash
 cd src/Fritz.Client
-dotnet run
+dotnet run --launch-profile https
 ```
 
-The client will be available at `http://localhost:5001`
+The client will be available at `https://localhost:7290` (HTTPS) and `http://localhost:5010` (HTTP)
 
 ### Running with Docker
 
