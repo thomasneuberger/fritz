@@ -14,13 +14,6 @@ public class ApiKeyMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Skip authentication for SignalR hub negotiation and connection
-        if (context.Request.Path.StartsWithSegments("/gamehub"))
-        {
-            await _next(context);
-            return;
-        }
-
         // Skip authentication for OpenAPI and Scalar UI in development
         if (context.Request.Path.StartsWithSegments("/openapi") || 
             context.Request.Path.StartsWithSegments("/scalar"))
