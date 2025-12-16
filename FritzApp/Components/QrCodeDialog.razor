@@ -1,0 +1,58 @@
+@using QRCoder
+@inject NavigationManager NavigationManager
+
+@if (IsVisible)
+{
+    <div class="qr-dialog-overlay" @onclick="Close">
+        <div class="qr-dialog-content" @onclick:stopPropagation="true">
+            <div class="qr-dialog-header">
+                <h2>Scan QR Code</h2>
+                <button class="close-button" @onclick="Close">✕</button>
+            </div>
+            <div class="qr-dialog-body">
+                <img src="@QrCodeDataUri" alt="QR Code" class="qr-code-image" />
+                <p class="qr-url">@AppUrl</p>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsVisibleChanged { get; set; }
+
+    private string QrCodeDataUri { get; set; } = string.Empty;
+    private string AppUrl { get; set; } = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        if (IsVisible && string.IsNullOrEmpty(QrCodeDataUri))
+        {
+            GenerateQrCode();
+        }
+    }
+
+    private void GenerateQrCode()
+    {
+        // Get the base URL (root of the app)
+        var uri = new Uri(NavigationManager.Uri);
+        AppUrl = $"{uri.Scheme}://{uri.Authority}/";
+
+        // Generate QR code
+        using var qrGenerator = new QRCodeGenerator();
+        using var qrCodeData = qrGenerator.CreateQrCode(AppUrl, QRCodeGenerator.ECCLevel.Q);
+        using var qrCode = new PngByteQRCode(qrCodeData);
+        
+        var qrCodeBytes = qrCode.GetGraphic(20);
+        QrCodeDataUri = $"data:image/png;base64,{Convert.ToBase64String(qrCodeBytes)}";
+    }
+
+    private async Task Close()
+    {
+        IsVisible = false;
+        await IsVisibleChanged.InvokeAsync(IsVisible);
+    }
+}

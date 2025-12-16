@@ -1,0 +1,123 @@
+.qr-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.qr-dialog-content {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.qr-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.qr-dialog-header h2 {
+    margin: 0;
+    color: #667eea;
+    font-size: 1.8rem;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-button:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.qr-dialog-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.qr-code-image {
+    width: 280px;
+    height: 280px;
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
+}
+
+.qr-url {
+    color: #666;
+    font-size: 0.9rem;
+    word-break: break-all;
+    text-align: center;
+    margin: 0;
+    max-width: 300px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+    .qr-dialog-content {
+        padding: 1.5rem;
+    }
+
+    .qr-dialog-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .qr-code-image {
+        width: 240px;
+        height: 240px;
+    }
+}
+
+@media (max-width: 360px) {
+    .qr-dialog-content {
+        padding: 1rem;
+    }
+
+    .qr-dialog-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .qr-code-image {
+        width: 200px;
+        height: 200px;
+    }
+}
