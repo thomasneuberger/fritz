@@ -22,7 +22,25 @@ public class ApiKeyMiddleware
             return;
         }
 
-        if (!context.Request.Headers.TryGetValue(ApiKeyHeaderName, out var extractedApiKey))
+        // Allow OPTIONS requests for CORS without API key
+        if (context.Request.Method == "OPTIONS")
+        {
+            await _next(context);
+            return;
+        }
+
+        // Check for API key in header first, then in query string (for SignalR)
+        string? extractedApiKey = null;
+        if (context.Request.Headers.TryGetValue(ApiKeyHeaderName, out var headerApiKey))
+        {
+            extractedApiKey = headerApiKey.ToString();
+        }
+        else if (context.Request.Query.TryGetValue("apiKey", out var queryApiKey))
+        {
+            extractedApiKey = queryApiKey.ToString();
+        }
+
+        if (string.IsNullOrEmpty(extractedApiKey))
         {
             context.Response.StatusCode = 401;
             await context.Response.WriteAsync("API Key is missing");

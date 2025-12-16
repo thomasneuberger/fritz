@@ -19,11 +19,11 @@ public class GameHubService : IAsyncDisposable
 
     public async Task ConnectAsync(string hubUrl)
     {
+        // SignalR doesn't reliably support custom headers, so pass API key via query string
+        var urlWithApiKey = $"{hubUrl}?apiKey={_apiKey}";
+        
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(hubUrl, options =>
-            {
-                options.Headers.Add("X-Api-Key", _apiKey);
-            })
+            .WithUrl(urlWithApiKey)
             .WithAutomaticReconnect()
             .Build();
 
