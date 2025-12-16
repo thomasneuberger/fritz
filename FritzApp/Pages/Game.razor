@@ -1,6 +1,7 @@
 @page "/game"
 @using FritzApp.Models
 @using FritzApp.Services
+@using FritzApp.Components
 @inject GameService GameService
 
 <PageTitle>Fritz Game</PageTitle>
@@ -31,10 +32,17 @@
         }
     </div>
 
-    <button class="new-game-btn" @onclick="NewGame">New Game</button>
+    <div class="button-container">
+        <button class="new-game-btn" @onclick="NewGame">New Game</button>
+        <button class="qr-code-btn" @onclick="ShowQrCode">📱 QR Code</button>
+    </div>
 </div>
 
+<QrCodeDialog IsVisible="@showQrDialog" IsVisibleChanged="@((value) => showQrDialog = value)" />
+
 @code {
+    private bool showQrDialog = false;
+
     protected override void OnInitialized()
     {
         GameService.NewGame();
@@ -49,6 +57,12 @@
     private void NewGame()
     {
         GameService.NewGame();
+        StateHasChanged();
+    }
+
+    private void ShowQrCode()
+    {
+        showQrDialog = true;
         StateHasChanged();
     }
 

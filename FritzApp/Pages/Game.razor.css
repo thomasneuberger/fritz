@@ -83,8 +83,15 @@
     color: transparent;
 }
 
-.new-game-btn {
+.button-container {
+    display: flex;
+    gap: 1rem;
     margin-top: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.new-game-btn, .qr-code-btn {
     padding: 1rem 2rem;
     font-size: 1.2rem;
     font-weight: bold;
@@ -97,12 +104,12 @@
     backdrop-filter: blur(10px);
 }
 
-.new-game-btn:hover {
+.new-game-btn:hover, .qr-code-btn:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: scale(1.05);
 }
 
-.new-game-btn:active {
+.new-game-btn:active, .qr-code-btn:active {
     transform: scale(0.95);
 }
 
