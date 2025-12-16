@@ -1,0 +1,76 @@
+@page "/join"
+@using Fritz.Client.Services
+@using Fritz.Shared.DTOs
+@inject GameApiService GameApiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Join Game - Fritz</PageTitle>
+
+<div class="page-container">
+    <h2>Join Existing Game</h2>
+
+    <div class="form-container">
+        <label for="gameCode">Game Code:</label>
+        <input id="gameCode" type="text" @bind="gameCode" class="form-input" placeholder="Enter 6-character code" maxlength="6" style="text-transform: uppercase;" />
+        
+        <label for="playerName">Your Name (optional):</label>
+        <input id="playerName" type="text" @bind="playerName" class="form-input" placeholder="Enter your name" />
+        
+        <button class="btn-primary" @onclick="JoinExistingGame" disabled="@(isJoining || string.IsNullOrWhiteSpace(gameCode))">
+            @if (isJoining)
+            {
+                <span>Joining...</span>
+            }
+            else
+            {
+                <span>Join Game</span>
+            }
+        </button>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-message">@errorMessage</div>
+        }
+    </div>
+</div>
+
+@code {
+    private string gameCode = "";
+    private string playerName = "";
+    private bool isJoining = false;
+    private string errorMessage = "";
+
+    private async Task JoinExistingGame()
+    {
+        try
+        {
+            isJoining = true;
+            errorMessage = "";
+            
+            var request = new JoinGameRequest 
+            { 
+                GameCode = gameCode.ToUpperInvariant(),
+                PlayerName = string.IsNullOrWhiteSpace(playerName) ? null : playerName 
+            };
+            
+            var response = await GameApiService.JoinGameAsync(request);
+            
+            if (response != null)
+            {
+                NavigationManager.NavigateTo($"/game/{response.GameId}/{response.PlayerSymbol}");
+            }
+            else
+            {
+                errorMessage = "Game not found or already started. Please check the code and try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to join game: {ex.Message}";
+        }
+        finally
+        {
+            isJoining = false;
+        }
+    }
+}

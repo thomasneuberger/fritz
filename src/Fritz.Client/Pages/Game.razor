@@ -1,0 +1,187 @@
+@page "/game/{GameId}/{PlayerSymbol}"
+@using Fritz.Client.Services
+@using Fritz.Shared.DTOs
+@using Fritz.Shared.Models
+@inject GameApiService GameApiService
+@inject GameHubService GameHubService
+@inject IConfiguration Configuration
+@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
+
+<PageTitle>Fritz Game - @GameId</PageTitle>
+
+<div class="game-container">
+    @if (gameState != null)
+    {
+        <div class="game-header">
+            <h2>Fritz Game</h2>
+            <div class="game-info">
+                <span>Code: <strong>@gameState.GameCode</strong></span>
+                <span>You are: <strong>@PlayerSymbol</strong></span>
+            </div>
+        </div>
+
+        <div class="game-status">
+            @if (gameState.State == "WaitingForPlayers")
+            {
+                <p class="status-waiting">Waiting for opponent...</p>
+            }
+            else if (gameState.State == "PlayerXWon" || gameState.State == "PlayerOWon")
+            {
+                <p class="status-winner">
+                    @if (gameState.Winner == PlayerSymbol)
+                    {
+                        <span>🎉 You Won! 🎉</span>
+                    }
+                    else
+                    {
+                        <span>😢 You Lost</span>
+                    }
+                </p>
+            }
+            else if (gameState.State == "Draw")
+            {
+                <p class="status-draw">🤝 It's a Draw!</p>
+            }
+            else if (gameState.State == "LastChance")
+            {
+                <p class="status-lastchance">
+                    ⚡ LAST CHANCE! ⚡
+                    @if (gameState.CurrentTurn == PlayerSymbol)
+                    {
+                        <span>Get 3 in a row to win!</span>
+                    }
+                    else
+                    {
+                        <span>Opponent's last chance...</span>
+                    }
+                </p>
+            }
+            else if (gameState.CurrentTurn == PlayerSymbol)
+            {
+                <p class="status-your-turn">Your Turn</p>
+            }
+            else
+            {
+                <p class="status-opponent-turn">Opponent's Turn</p>
+            }
+        </div>
+
+        <div class="board">
+            @for (int row = 0; row < 5; row++)
+            {
+                <div class="board-row">
+                    @for (int col = 0; col < 5; col++)
+                    {
+                        var r = row;
+                        var c = col;
+                        var cellValue = gameState.Board[r, c];
+                        var isDisabled = cellValue != Shared.Models.PlayerSymbol.None || 
+                                       gameState.CurrentTurn != PlayerSymbol ||
+                                       gameState.State == "PlayerXWon" ||
+                                       gameState.State == "PlayerOWon" ||
+                                       gameState.State == "Draw" ||
+                                       gameState.State == "WaitingForPlayers";
+
+                        <button class="board-cell @(cellValue != Shared.Models.PlayerSymbol.None ? "filled" : "")" 
+                                @onclick="() => MakeMove(r, c)"
+                                disabled="@isDisabled">
+                            @(cellValue == Shared.Models.PlayerSymbol.X ? "X" : cellValue == Shared.Models.PlayerSymbol.O ? "O" : "")
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-message">@errorMessage</div>
+        }
+
+        <button class="btn-secondary" @onclick="GoHome">Back to Home</button>
+    }
+    else if (isLoading)
+    {
+        <p>Loading game...</p>
+    }
+    else
+    {
+        <p>Game not found.</p>
+    }
+</div>
+
+@code {
+    [Parameter] public string GameId { get; set; } = "";
+    [Parameter] public string PlayerSymbol { get; set; } = "";
+
+    private GameStateDto? gameState;
+    private bool isLoading = true;
+    private string errorMessage = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Load initial game state
+            gameState = await GameApiService.GetGameStateAsync(GameId);
+
+            // Connect to SignalR hub
+            var hubUrl = Configuration["ApiBaseUrl"] + "/gamehub";
+            await GameHubService.ConnectAsync(hubUrl);
+            
+            // Subscribe to events
+            GameHubService.OnGameStateUpdated += OnGameStateUpdated;
+            GameHubService.OnInvalidMove += OnInvalidMove;
+            
+            // Join the game room
+            await GameHubService.JoinGameRoomAsync(GameId, PlayerSymbol);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load game: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task MakeMove(int row, int col)
+    {
+        try
+        {
+            errorMessage = "";
+            await GameHubService.MakeMoveAsync(GameId, PlayerSymbol, new MakeMoveRequest { Row = row, Col = col });
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to make move: {ex.Message}";
+        }
+    }
+
+    private void OnGameStateUpdated(GameStateDto updatedState)
+    {
+        gameState = updatedState;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnInvalidMove(string message)
+    {
+        errorMessage = message;
+        InvokeAsync(StateHasChanged);
+    }
+
+
+
+    private void GoHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        GameHubService.OnGameStateUpdated -= OnGameStateUpdated;
+        GameHubService.OnInvalidMove -= OnInvalidMove;
+        await GameHubService.DisposeAsync();
+    }
+}

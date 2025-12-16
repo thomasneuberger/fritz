@@ -1,0 +1,26 @@
+{
+  "name": "Fritz - 5x5 Tic-Tac-Toe",
+  "short_name": "Fritz",
+  "id": "./",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f5f5",
+  "theme_color": "#4CAF50",
+  "prefer_related_applications": false,
+  "description": "Play Fritz - A 5x5 Tic-Tac-Toe game with a twist!",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+﻿@page "/"
+@using Fritz.Client.Services
+
+<PageTitle>Fritz Game</PageTitle>
+
+<div class="home-container">
+    <h1 class="game-title">Fritz</h1>
+    <p class="game-subtitle">5x5 Tic-Tac-Toe with a Twist!</p>
+
+    <div class="menu-buttons">
+        <button class="btn-primary" @onclick="NavigateToCreate">
+            <span class="btn-icon">🎮</span>
+            Start New Game
+        </button>
+        
+        <button class="btn-secondary" @onclick="NavigateToJoin">
+            <span class="btn-icon">🔗</span>
+            Join Existing Game
+        </button>
+    </div>
+
+    <div class="rules-section">
+        <h3>Game Rules</h3>
+        <ul>
+            <li>🎯 Grid is 5x5 (instead of 3x3)</li>
+            <li>🏆 Get 3 in a row to trigger last chance</li>
+            <li>⏱️ Opponent gets ONE more move to also get 3 in a row</li>
+            <li>🎊 If opponent succeeds, they win! Otherwise, first player wins</li>
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Inject] private NavigationManager? NavigationManager { get; set; }
+
+    private void NavigateToCreate()
+    {
+        NavigationManager?.NavigateTo("/create");
+    }
+
+    private void NavigateToJoin()
+    {
+        NavigationManager?.NavigateTo("/join");
+    }
+}

@@ -1,0 +1,88 @@
+@page "/create"
+@using Fritz.Client.Services
+@using Fritz.Shared.DTOs
+@inject GameApiService GameApiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create Game - Fritz</PageTitle>
+
+<div class="page-container">
+    <h2>Create New Game</h2>
+
+    @if (!string.IsNullOrEmpty(gameCode))
+    {
+        <div class="game-code-display">
+            <h3>Share this code with your friend:</h3>
+            <div class="code-box">@gameCode</div>
+            <p class="waiting-text">Waiting for opponent to join...</p>
+            <button class="btn-primary" @onclick="StartGame">Start Game</button>
+        </div>
+    }
+    else
+    {
+        <div class="form-container">
+            <label for="playerName">Your Name (optional):</label>
+            <input id="playerName" type="text" @bind="playerName" class="form-input" placeholder="Enter your name" />
+            
+            <button class="btn-primary" @onclick="CreateNewGame" disabled="@isCreating">
+                @if (isCreating)
+                {
+                    <span>Creating...</span>
+                }
+                else
+                {
+                    <span>Create Game</span>
+                }
+            </button>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-message">@errorMessage</div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private string playerName = "";
+    private string gameCode = "";
+    private string gameId = "";
+    private string playerSymbol = "";
+    private bool isCreating = false;
+    private string errorMessage = "";
+
+    private async Task CreateNewGame()
+    {
+        try
+        {
+            isCreating = true;
+            errorMessage = "";
+            
+            var request = new CreateGameRequest { PlayerName = string.IsNullOrWhiteSpace(playerName) ? null : playerName };
+            var response = await GameApiService.CreateGameAsync(request);
+            
+            if (response != null)
+            {
+                gameCode = response.GameCode;
+                gameId = response.GameId;
+                playerSymbol = response.PlayerSymbol;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to create game: {ex.Message}";
+        }
+        finally
+        {
+            isCreating = false;
+        }
+    }
+
+    private void StartGame()
+    {
+        if (!string.IsNullOrEmpty(gameId))
+        {
+            NavigationManager.NavigateTo($"/game/{gameId}/{playerSymbol}");
+        }
+    }
+}

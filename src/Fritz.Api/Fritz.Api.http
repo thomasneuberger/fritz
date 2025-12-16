@@ -1,0 +1,6 @@
+@Fritz.Api_HostAddress = http://localhost:5121
+
+GET {{Fritz.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
