@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: src/Fritz.Api/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ApiKey=fritz-game-api-key-2024
+      - ASPNETCORE_URLS=http://+:8080
+    networks:
+      - fritz-network
+
+networks:
+  fritz-network:
+    driver: bridge

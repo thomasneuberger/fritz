@@ -53,11 +53,22 @@ public class GameHub : Hub
 
     private GameStateDto MapGameToDto(Models.Game game)
     {
+        // Convert 2D array to jagged array for JSON serialization
+        var board = new PlayerSymbol[5][];
+        for (int i = 0; i < 5; i++)
+        {
+            board[i] = new PlayerSymbol[5];
+            for (int j = 0; j < 5; j++)
+            {
+                board[i][j] = game.Board[i, j];
+            }
+        }
+        
         return new GameStateDto
         {
             GameId = game.Id,
             GameCode = game.Code,
-            Board = game.Board,
+            Board = board,
             State = game.State.ToString(),
             CurrentTurn = game.CurrentTurn.ToString(),
             Winner = game.Winner?.ToString(),

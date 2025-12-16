@@ -75,7 +75,7 @@
                     {
                         var r = row;
                         var c = col;
-                        var cellValue = gameState.Board[r, c];
+                        var cellValue = gameState.Board[r][c];
                         var isDisabled = cellValue != Shared.Models.PlayerSymbol.None || 
                                        gameState.CurrentTurn != PlayerSymbol ||
                                        gameState.State == "PlayerXWon" ||
