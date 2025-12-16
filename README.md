@@ -31,22 +31,20 @@ Fritz is an exciting variant of Tic-Tac-Toe played on a 5x5 grid with a special 
    cd fritz
    ```
 
-2. Navigate to the app directory:
+2. Build the application:
+   ```bash
+   dotnet build Fritz.sln
+   ```
+
+3. Run the application:
    ```bash
    cd FritzApp
-   ```
-
-3. Build the application:
-   ```bash
-   dotnet build
-   ```
-
-4. Run the application:
-   ```bash
    dotnet run
    ```
 
-5. Open your browser and navigate to the URL shown in the console (typically `http://localhost:5019`)
+4. Open your browser and navigate to the URL shown in the console (typically `http://localhost:5019`)
+
+**Alternative**: You can open `Fritz.sln` in Visual Studio or any IDE that supports .NET solutions.
 
 ### Installing as PWA
 
@@ -66,12 +64,16 @@ When you open the app in a browser, you can install it as a Progressive Web App:
 ## Project Structure
 
 ```
-FritzApp/
-├── Models/          # Game data models (Player, GameState, Cell)
-├── Services/        # Game logic (GameService)
-├── Pages/           # UI components (Game.razor)
-├── Layout/          # Layout components
-└── wwwroot/         # Static files (CSS, icons, manifest)
+fritz/
+├── Fritz.sln        # Solution file
+├── FritzApp/        # Main application project
+│   ├── Models/      # Game data models (Player, GameState, Cell)
+│   ├── Services/    # Game logic (GameService)
+│   ├── Pages/       # UI components (Game.razor)
+│   ├── Layout/      # Layout components
+│   └── wwwroot/     # Static files (CSS, icons, manifest)
+├── README.md        # This file
+└── LICENSE          # MIT License
 ```
 
 ## License
