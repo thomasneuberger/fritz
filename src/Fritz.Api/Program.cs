@@ -17,7 +17,8 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .WithExposedHeaders("X-Api-Key");
     });
     
     options.AddPolicy("AllowSignalR", policy =>
