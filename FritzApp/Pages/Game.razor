@@ -1,0 +1,79 @@
+@page "/game"
+@using FritzApp.Models
+@using FritzApp.Services
+@inject GameService GameService
+
+<PageTitle>Fritz Game</PageTitle>
+
+<div class="game-container">
+    <h1 class="game-title">Fritz</h1>
+    
+    <div class="status-message">
+        @GameService.StatusMessage
+    </div>
+
+    <div class="game-board">
+        @for (int row = 0; row < 5; row++)
+        {
+            int currentRow = row;
+            <div class="board-row">
+                @for (int col = 0; col < 5; col++)
+                {
+                    int currentCol = col;
+                    var cell = GameService.Board[currentRow, currentCol];
+                    <button class="cell @GetCellClass(cell)" 
+                            @onclick="() => OnCellClick(currentRow, currentCol)"
+                            disabled="@IsGameOver()">
+                        @GetCellContent(cell)
+                    </button>
+                }
+            </div>
+        }
+    </div>
+
+    <button class="new-game-btn" @onclick="NewGame">New Game</button>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        GameService.NewGame();
+    }
+
+    private void OnCellClick(int row, int col)
+    {
+        GameService.MakeMove(row, col);
+        StateHasChanged();
+    }
+
+    private void NewGame()
+    {
+        GameService.NewGame();
+        StateHasChanged();
+    }
+
+    private string GetCellContent(Cell cell)
+    {
+        return cell.Player switch
+        {
+            Player.X => "✕",
+            Player.O => "◯",
+            _ => ""
+        };
+    }
+
+    private string GetCellClass(Cell cell)
+    {
+        return cell.Player switch
+        {
+            Player.X => "cell-x",
+            Player.O => "cell-o",
+            _ => "cell-empty"
+        };
+    }
+
+    private bool IsGameOver()
+    {
+        return GameService.State == GameState.GameOver;
+    }
+}
