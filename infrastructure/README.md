@@ -72,7 +72,7 @@ az ad app federated-credential create \
   --parameters '{
     "name": "fritz-github-actions",
     "issuer": "https://token.actions.githubusercontent.com",
-    "subject": "repo:<your-github-org>/<your-repo-name>:ref:refs/heads/main",
+    "subject": "repo:<your-github-org>/<your-repo-name>:environment:development",
     "audiences": ["api://AzureADTokenExchange"]
   }'
 ```
@@ -81,6 +81,7 @@ az ad app federated-credential create \
 
 The service principal needs the following permissions:
 - **Contributor role** on the resource group where the Container App will be deployed (to create and manage the Container App resource)
+- **Container Apps Contributor role** on the Container Apps Environment (to deploy to the environment)
 - **Reader role** on the resource group containing the Azure Container Apps Environment (to reference the existing environment)
 
 If the Container Apps Environment is in a different resource group than where you're deploying the Container App, grant additional permissions:
