@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerAppName": {
+      "value": "fritz-app"
+    },
+    "location": {
+      "value": "westeurope"
+    },
+    "containerAppsEnvironmentName": {
+      "value": "your-container-environment-name"
+    },
+    "containerAppsEnvironmentResourceGroup": {
+      "value": "your-environment-resource-group"
+    },
+    "containerImage": {
+      "value": "ghcr.io/thomasneuberger/fritz:latest"
+    },
+    "containerRegistryServer": {
+      "value": "ghcr.io"
+    },
+    "containerRegistryUsername": {
+      "value": "your-username"
+    },
+    "containerRegistryPassword": {
+      "value": "your-password-or-token"
+    },
+    "minReplicas": {
+      "value": 0
+    },
+    "maxReplicas": {
+      "value": 10
+    },
+    "concurrentRequests": {
+      "value": 10
+    }
+  }
+}

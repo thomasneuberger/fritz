@@ -416,3 +416,7 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Bicep compiled templates (ARM JSON)
+infrastructure/*.json
+!infrastructure/parameters.example.json
