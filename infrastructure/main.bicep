@@ -30,11 +30,8 @@ param minReplicas int = 0
 @description('Maximum replica count for autoscaling')
 param maxReplicas int = 10
 
-@description('CPU threshold percentage for scaling')
-param cpuThreshold int = 80
-
-@description('Memory threshold percentage for scaling')
-param memoryThreshold int = 80
+@description('Concurrent requests per replica for HTTP scaling')
+param concurrentRequests int = 10
 
 module containerApp 'containerapp.bicep' = {
   name: 'containerAppDeployment'
@@ -49,8 +46,7 @@ module containerApp 'containerapp.bicep' = {
     containerRegistryPassword: containerRegistryPassword
     minReplicas: minReplicas
     maxReplicas: maxReplicas
-    cpuThreshold: cpuThreshold
-    memoryThreshold: memoryThreshold
+    concurrentRequests: concurrentRequests
   }
 }
 

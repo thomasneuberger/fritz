@@ -30,11 +30,8 @@ param minReplicas int = 0
 @description('Maximum replica count')
 param maxReplicas int = 10
 
-@description('CPU threshold for scaling')
-param cpuThreshold int = 80
-
-@description('Memory threshold for scaling')
-param memoryThreshold int = 80
+@description('Concurrent requests per replica for HTTP scaling')
+param concurrentRequests int = 10
 
 // Reference to the existing Container Apps Environment
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' existing = {
@@ -89,22 +86,10 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
         maxReplicas: maxReplicas
         rules: [
           {
-            name: 'cpu-scaling'
-            custom: {
-              type: 'cpu'
+            name: 'http-scaling'
+            http: {
               metadata: {
-                type: 'Utilization'
-                value: string(cpuThreshold)
-              }
-            }
-          }
-          {
-            name: 'memory-scaling'
-            custom: {
-              type: 'memory'
-              metadata: {
-                type: 'Utilization'
-                value: string(memoryThreshold)
+                concurrentRequests: string(concurrentRequests)
               }
             }
           }

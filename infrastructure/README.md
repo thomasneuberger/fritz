@@ -20,9 +20,9 @@ The infrastructure consists of:
 - **Type**: Azure Container App
 - **Hosting**: Runs the Fritz Blazor WebAssembly app with nginx
 - **Scaling**: Configured with autoscaling
-  - Minimum replicas: 0 (can scale to zero)
+  - Minimum replicas: 0 (can scale to zero for cost optimization)
   - Maximum replicas: 10
-  - Scaling rules: CPU and memory utilization based
+  - Scaling rules: HTTP-based (concurrent requests per replica)
 
 ## Required GitHub Secrets
 
@@ -121,19 +121,19 @@ az deployment group create \
 | `containerRegistryServer` | Container registry server | ghcr.io |
 | `minReplicas` | Minimum number of replicas (autoscaling) | 0 |
 | `maxReplicas` | Maximum number of replicas (autoscaling) | 10 |
-| `cpuThreshold` | CPU percentage threshold for scaling | 80 |
-| `memoryThreshold` | Memory percentage threshold for scaling | 80 |
+| `concurrentRequests` | Concurrent requests per replica for HTTP scaling | 10 |
 
 ## Autoscaling Configuration
 
-The Container App is configured with autoscaling rules:
-- **Minimum instances**: 0 (can scale to zero to save costs)
+The Container App is configured with HTTP-based autoscaling:
+- **Minimum instances**: 0 (can scale to zero to save costs when no traffic)
 - **Maximum instances**: 10
-- **Scaling triggers**:
-  - CPU utilization > 80%
-  - Memory utilization > 80%
+- **Scaling trigger**: HTTP concurrent requests
+  - Default: 10 concurrent requests per replica
+  - When traffic exceeds this threshold, new replicas are automatically created
+  - When traffic decreases, replicas scale down (including to zero)
 
-This ensures the app scales automatically based on load while being cost-effective when idle.
+This ensures the app scales automatically based on actual HTTP traffic while being cost-effective when idle.
 
 ## Outputs
 

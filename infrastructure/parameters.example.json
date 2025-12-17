@@ -32,11 +32,8 @@
     "maxReplicas": {
       "value": 10
     },
-    "cpuThreshold": {
-      "value": 80
-    },
-    "memoryThreshold": {
-      "value": 80
+    "concurrentRequests": {
+      "value": 10
     }
   }
 }
