@@ -70,7 +70,7 @@ az ad app federated-credential create \
   --parameters '{
     "name": "fritz-github-actions",
     "issuer": "https://token.actions.githubusercontent.com",
-    "subject": "repo:thomasneuberger/fritz:ref:refs/heads/main",
+    "subject": "repo:<your-github-org>/<your-repo-name>:ref:refs/heads/main",
     "audiences": ["api://AzureADTokenExchange"]
   }'
 ```
