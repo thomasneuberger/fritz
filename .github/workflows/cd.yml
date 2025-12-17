@@ -112,7 +112,7 @@ jobs:
       id-token: write
       contents: read
     environment:
-      name: production
+      name: development
       url: ${{ steps.deploy.outputs.url }}
       
     steps:

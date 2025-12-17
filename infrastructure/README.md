@@ -57,14 +57,16 @@ Create a service principal with federated credentials for GitHub Actions:
 # Create a resource group (if needed)
 az group create --name <your-resource-group> --location westeurope
 
-# Create a service principal
+# Create a service principal and capture the output
 az ad sp create-for-rbac \
   --name "fritz-github-actions" \
   --role contributor \
-  --scopes /subscriptions/<subscription-id>/resourceGroups/<your-resource-group> \
-  --sdk-auth
+  --scopes /subscriptions/<subscription-id>/resourceGroups/<your-resource-group>
+
+# Note the appId (client ID) from the output above
 
 # Configure federated credentials for GitHub
+# Replace <app-id> with the appId value from the service principal creation output
 az ad app federated-credential create \
   --id <app-id> \
   --parameters '{
