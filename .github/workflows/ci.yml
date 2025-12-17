@@ -26,3 +26,8 @@ jobs:
       
     - name: Build
       run: dotnet build Fritz.sln --configuration Release --no-restore --warnaserror
+      
+    - name: Validate Bicep templates
+      run: |
+        az bicep build --file ./infrastructure/main.bicep
+        az bicep build --file ./infrastructure/containerapp.bicep
