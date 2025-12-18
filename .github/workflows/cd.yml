@@ -139,8 +139,8 @@ jobs:
           containerAppsEnvironmentName=${{ secrets.AZURE_CONTAINER_ENV_NAME }}
           containerAppsEnvironmentResourceGroup=${{ secrets.AZURE_CONTAINER_ENV_RESOURCE_GROUP }}
           containerImage=${{ needs.publish.outputs.image }}
-          containerRegistryUsername=${{ github.actor }}
-          containerRegistryPassword=${{ secrets.GITHUB_TOKEN }}
+          containerRegistryUsername=${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+          containerRegistryPassword=${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
           minReplicas=0
         deploymentName: fritz-deployment-${{ needs.publish.outputs.version }}
         
