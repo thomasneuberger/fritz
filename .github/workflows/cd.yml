@@ -142,6 +142,7 @@ jobs:
           containerRegistryUsername=${{ secrets.CONTAINER_REGISTRY_USERNAME }}
           containerRegistryPassword=${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
           minReplicas=0
+          customDomain=${{ secrets.CUSTOM_DOMAIN }}
         deploymentName: fritz-deployment-${{ needs.publish.outputs.version }}
         
     - name: Display deployment URL

@@ -80,6 +80,15 @@ fritz/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Deployment
+
+This application can be deployed to Azure Container Apps with support for:
+- Automatic scaling based on HTTP traffic
+- Custom domain names with managed HTTPS certificates
+- GitHub Actions CI/CD pipeline
+
+For detailed deployment instructions, see the [infrastructure README](infrastructure/README.md).
+
 ## Author
 
 Thomas Neuberger

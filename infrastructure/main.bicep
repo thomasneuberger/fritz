@@ -33,6 +33,9 @@ param maxReplicas int = 10
 @description('Concurrent requests per replica for HTTP scaling')
 param concurrentRequests int = 10
 
+@description('Custom domain name for the Container App (optional)')
+param customDomain string = ''
+
 module containerApp 'containerapp.bicep' = {
   name: 'containerAppDeployment'
   params: {
@@ -47,6 +50,7 @@ module containerApp 'containerapp.bicep' = {
     minReplicas: minReplicas
     maxReplicas: maxReplicas
     concurrentRequests: concurrentRequests
+    customDomain: customDomain
   }
 }
 

@@ -39,6 +39,7 @@ For the CD workflow to deploy to Azure, configure these secrets in your GitHub r
 | `AZURE_CONTAINER_ENV_RESOURCE_GROUP` | Resource group containing the Container Apps Environment |
 | `CONTAINER_REGISTRY_USERNAME` | Username for GitHub Container Registry authentication (your GitHub username) |
 | `CONTAINER_REGISTRY_PASSWORD` | Personal Access Token (PAT) for GitHub Container Registry authentication |
+| `CUSTOM_DOMAIN` | (Optional) Custom domain name for the Container App (e.g., fritz.example.com) |
 
 ### Setting up Container Registry Authentication
 
@@ -57,6 +58,33 @@ The Container App needs to authenticate with GitHub Container Registry (GHCR) to
 6. Generate the token and copy it immediately (you won't be able to see it again)
 7. Add the token as the `CONTAINER_REGISTRY_PASSWORD` secret in the `development` environment (Repository Settings → Environments → development → Add secret)
 8. Also add your GitHub username as the `CONTAINER_REGISTRY_USERNAME` secret in the same environment
+
+## Custom Domain Configuration
+
+The Container App supports custom domains with automatic HTTPS using Azure-managed certificates.
+
+### Setting Up a Custom Domain
+
+1. **Add the CUSTOM_DOMAIN secret**: In your GitHub repository, go to Settings → Environments → development → Add secret, and add a secret named `CUSTOM_DOMAIN` with your domain name (e.g., `fritz.example.com`).
+
+2. **Configure DNS settings**: Before deploying, configure your DNS provider to point your custom domain to the Container App:
+   - Create a CNAME record pointing your custom domain to the Container App's default FQDN
+   - Example: `fritz.example.com` → `<your-container-app-name>.<region>.azurecontainerapps.io`
+   - DNS propagation may take a few minutes to several hours
+
+3. **Deploy the application**: Once DNS is configured and the `CUSTOM_DOMAIN` secret is set, deploy the application using the CD workflow or manual deployment.
+
+4. **Certificate provisioning**: Azure will automatically provision a managed certificate for your custom domain:
+   - The certificate uses CNAME-based domain validation
+   - Certificate provisioning is automatic and may take a few minutes
+   - The certificate is automatically renewed before expiration
+   - HTTPS will be enabled automatically once the certificate is provisioned
+
+### Important Notes
+
+- **DNS must be configured first**: Ensure your DNS CNAME record is properly configured and propagated before deploying with a custom domain. The managed certificate provisioning will fail if DNS is not correctly configured.
+- **Custom domain is optional**: If you don't set the `CUSTOM_DOMAIN` secret, the app will use the default Azure Container Apps domain.
+- **HTTPS only**: The Container App is configured to use HTTPS only; HTTP requests are not allowed.
 
 ## Azure Setup
 
@@ -136,7 +164,8 @@ az deployment group create \
     containerImage="ghcr.io/thomasneuberger/fritz:latest" \
     containerRegistryUsername="<your-github-username>" \
     containerRegistryPassword="<your-github-pat>" \
-    minReplicas=0
+    minReplicas=0 \
+    customDomain="<your-custom-domain>"
 ```
 
 **Note:** Replace `<your-github-pat>` with a GitHub Personal Access Token that has `read:packages` scope to authenticate with GitHub Container Registry.
@@ -163,6 +192,7 @@ az deployment group create \
 | `minReplicas` | Minimum number of replicas (autoscaling) | 0 |
 | `maxReplicas` | Maximum number of replicas (autoscaling) | 10 |
 | `concurrentRequests` | Concurrent requests per replica for HTTP scaling | 10 |
+| `customDomain` | Custom domain name for the Container App | (empty - uses default domain) |
 
 ## Autoscaling Configuration
 
