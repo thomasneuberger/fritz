@@ -24,9 +24,9 @@ The infrastructure consists of:
   - Maximum replicas: 10
   - Scaling rules: HTTP-based (concurrent requests per replica)
 
-## Required GitHub Secrets
+## Required GitHub Environment Secrets
 
-For the CD workflow to deploy to Azure, configure these secrets in your GitHub repository:
+For the CD workflow to deploy to Azure, configure these secrets in your GitHub repository under the `development` environment (Settings → Environments → development):
 
 | Secret Name | Description |
 |-------------|-------------|
@@ -37,6 +37,26 @@ For the CD workflow to deploy to Azure, configure these secrets in your GitHub r
 | `AZURE_CONTAINER_APP_NAME` | Name for the Container App |
 | `AZURE_CONTAINER_ENV_NAME` | Name of the existing Container Apps Environment |
 | `AZURE_CONTAINER_ENV_RESOURCE_GROUP` | Resource group containing the Container Apps Environment |
+| `CONTAINER_REGISTRY_USERNAME` | Username for GitHub Container Registry authentication (your GitHub username) |
+| `CONTAINER_REGISTRY_PASSWORD` | Personal Access Token (PAT) for GitHub Container Registry authentication |
+
+### Setting up Container Registry Authentication
+
+The Container App needs to authenticate with GitHub Container Registry (GHCR) to pull the container image. This requires a Personal Access Token (PAT) with appropriate permissions.
+
+**Why a PAT is required:**
+- The default `GITHUB_TOKEN` used for publishing images does not have sufficient permissions for Azure Container Apps to pull images
+- A PAT with `read:packages` scope provides the necessary authentication for image pulls
+
+**To create a PAT:**
+1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Click "Generate new token (classic)"
+3. Give it a descriptive name (e.g., "Fritz Container Registry Access")
+4. Select the `read:packages` scope
+5. Set an appropriate expiration date
+6. Generate the token and copy it immediately (you won't be able to see it again)
+7. Add the token as the `CONTAINER_REGISTRY_PASSWORD` secret in the `development` environment (Repository Settings → Environments → development → Add secret)
+8. Also add your GitHub username as the `CONTAINER_REGISTRY_USERNAME` secret in the same environment
 
 ## Azure Setup
 
@@ -115,9 +135,11 @@ az deployment group create \
     containerAppsEnvironmentResourceGroup="<environment-resource-group>" \
     containerImage="ghcr.io/thomasneuberger/fritz:latest" \
     containerRegistryUsername="<your-github-username>" \
-    containerRegistryPassword="<your-github-token>" \
+    containerRegistryPassword="<your-github-pat>" \
     minReplicas=0
 ```
+
+**Note:** Replace `<your-github-pat>` with a GitHub Personal Access Token that has `read:packages` scope to authenticate with GitHub Container Registry.
 
 ## Template Parameters
 
