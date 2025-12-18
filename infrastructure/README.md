@@ -85,7 +85,12 @@ The Container App supports custom domains with automatic HTTPS using Azure-manag
 **Important**: Managed certificates for Azure Container Apps are created as child resources of the Container Apps Environment and **must be in the same resource group as the environment**, not the Container App itself. This is an Azure platform requirement.
 
 - If your Container App and Container Apps Environment are in different resource groups, the managed certificate will be created in the environment's resource group
-- The deployment will create the certificate resource at: `/subscriptions/<subscription-id>/resourceGroups/<environment-resource-group>/providers/Microsoft.App/managedEnvironments/<environment-name>/managedCertificates/<certificate-name>`
+- The deployment will create the certificate resource at:
+  ```
+  /subscriptions/<subscription-id>/resourceGroups/<environment-resource-group>/
+  providers/Microsoft.App/managedEnvironments/<environment-name>/
+  managedCertificates/<certificate-name>
+  ```
 - This behavior is by design and cannot be changed when using Azure-managed certificates
 
 **Required Permissions for Cross-Resource-Group Deployments:**
@@ -151,7 +156,7 @@ If the Container Apps Environment is in a different resource group than where yo
 
 ```bash
 # Grant Contributor access to the Container Apps Environment resource group
-# This is required to create managed certificates in the environment's resource group
+# This is required when using custom domains with managed certificates
 az role assignment create \
   --assignee <app-id> \
   --role Contributor \
