@@ -34,6 +34,9 @@
     },
     "concurrentRequests": {
       "value": 10
+    },
+    "customDomain": {
+      "value": ""
     }
   }
 }

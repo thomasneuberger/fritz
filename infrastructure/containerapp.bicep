@@ -33,10 +33,24 @@ param maxReplicas int = 10
 @description('Concurrent requests per replica for HTTP scaling')
 param concurrentRequests int = 10
 
+@description('Custom domain name for the Container App (optional)')
+param customDomain string = ''
+
 // Reference to the existing Container Apps Environment
 resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' existing = {
   name: containerAppsEnvironmentName
   scope: resourceGroup(containerAppsEnvironmentResourceGroup)
+}
+
+// Managed certificate for custom domain (only created if customDomain is provided)
+module managedCertificate 'managedcertificate.bicep' = if (!empty(customDomain)) {
+  name: 'managedCertificateDeployment'
+  scope: resourceGroup(containerAppsEnvironmentResourceGroup)
+  params: {
+    containerAppsEnvironmentName: containerAppsEnvironmentName
+    customDomain: customDomain
+    location: location
+  }
 }
 
 resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
@@ -55,6 +69,13 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             weight: 100
           }
         ]
+        customDomains: !empty(customDomain) ? [
+          {
+            name: customDomain
+            certificateId: managedCertificate.outputs.certificateId
+            bindingType: 'SniEnabled'
+          }
+        ] : []
       }
       registries: [
         {
