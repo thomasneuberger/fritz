@@ -43,6 +43,9 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01'
 }
 
 // Managed certificate for custom domain (only created if customDomain is provided)
+// NOTE: The certificate MUST be deployed in the Container Apps Environment's resource group,
+// not the app's resource group. This is an Azure platform requirement for managed certificates.
+// The 'scope' parameter ensures the certificate is created in the correct resource group.
 module managedCertificate 'managedcertificate.bicep' = if (!empty(customDomain)) {
   name: 'managedCertificateDeployment'
   scope: resourceGroup(containerAppsEnvironmentResourceGroup)
