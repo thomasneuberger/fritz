@@ -1,4 +1,5 @@
 using FritzApp.Models;
+using FritzApp.Resources;
 using Microsoft.Extensions.Localization;
 
 namespace FritzApp.Services;
@@ -7,7 +8,7 @@ public class GameService
 {
     private const int BoardSize = 5;
     private const int WinLength = 3;
-    private readonly IStringLocalizer<GameService> _localizer;
+    private readonly IStringLocalizer<Localizations> _localizer;
 
     public Cell[,] Board { get; private set; } = new Cell[BoardSize, BoardSize];
     public Player CurrentPlayer { get; private set; } = Player.X;
@@ -16,7 +17,7 @@ public class GameService
     public Player? FirstRowPlayer { get; private set; }  // Player who achieved first row of 3
     public string StatusMessage { get; private set; } = string.Empty;
 
-    public GameService(IStringLocalizer<GameService> localizer)
+    public GameService(IStringLocalizer<Localizations> localizer)
     {
         _localizer = localizer;
         InitializeBoard();

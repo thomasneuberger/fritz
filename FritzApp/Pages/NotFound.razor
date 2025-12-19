@@ -1,7 +1,8 @@
 ﻿@page "/not-found"
 @layout MainLayout
+@using FritzApp.Resources
 @using Microsoft.Extensions.Localization
-@inject IStringLocalizer<NotFound> Localizer
+@inject IStringLocalizer<Localizations> Localizer
 
 <h3>@Localizer["PageNotFound"]</h3>
 <p>@Localizer["PageNotFoundMessage"]</p>
