@@ -7,6 +7,7 @@
 @inject GameService GameService
 @inject IStringLocalizer<Localizations> Localizer
 @inject CultureService CultureService
+@implements IDisposable
 
 <PageTitle>Fritz Game</PageTitle>
 
@@ -54,6 +55,18 @@
     protected override void OnInitialized()
     {
         GameService.NewGame();
+        CultureService.CultureChanged += OnCultureChanged;
+    }
+    
+    private void OnCultureChanged()
+    {
+        GameService.RefreshStatusMessage();
+        StateHasChanged();
+    }
+    
+    public void Dispose()
+    {
+        CultureService.CultureChanged -= OnCultureChanged;
     }
 
     private void OnCellClick(int row, int col)

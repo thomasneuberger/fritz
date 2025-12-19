@@ -28,7 +28,7 @@ public class CultureService
             }
             
             // If no stored preference, try to get browser language
-            var browserLanguage = await _jsRuntime.InvokeAsync<string>("eval", "navigator.language || navigator.userLanguage");
+            var browserLanguage = await _jsRuntime.InvokeAsync<string>("getBrowserLanguage");
             
             // Map browser language to supported cultures
             if (browserLanguage.StartsWith("de", StringComparison.OrdinalIgnoreCase))
