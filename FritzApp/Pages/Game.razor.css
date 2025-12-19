@@ -91,7 +91,7 @@
     justify-content: center;
 }
 
-.new-game-btn, .qr-code-btn {
+.new-game-btn, .rules-btn, .qr-code-btn {
     padding: 1rem 2rem;
     font-size: 1.2rem;
     font-weight: bold;
@@ -104,12 +104,12 @@
     backdrop-filter: blur(10px);
 }
 
-.new-game-btn:hover, .qr-code-btn:hover {
+.new-game-btn:hover, .rules-btn:hover, .qr-code-btn:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: scale(1.05);
 }
 
-.new-game-btn:active, .qr-code-btn:active {
+.new-game-btn:active, .rules-btn:active, .qr-code-btn:active {
     transform: scale(0.95);
 }
 

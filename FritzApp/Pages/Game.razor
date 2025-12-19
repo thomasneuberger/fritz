@@ -34,14 +34,17 @@
 
     <div class="button-container">
         <button class="new-game-btn" @onclick="NewGame">New Game</button>
+        <button class="rules-btn" @onclick="ShowRules">📖 Rules</button>
         <button class="qr-code-btn" @onclick="ShowQrCode">📱 QR Code</button>
     </div>
 </div>
 
 <QrCodeDialog IsVisible="@showQrDialog" IsVisibleChanged="@((value) => showQrDialog = value)" />
+<RulesDialog IsVisible="@showRulesDialog" IsVisibleChanged="@((value) => showRulesDialog = value)" />
 
 @code {
     private bool showQrDialog = false;
+    private bool showRulesDialog = false;
 
     protected override void OnInitialized()
     {
@@ -63,6 +66,12 @@
     private void ShowQrCode()
     {
         showQrDialog = true;
+        StateHasChanged();
+    }
+
+    private void ShowRules()
+    {
+        showRulesDialog = true;
         StateHasChanged();
     }
 
