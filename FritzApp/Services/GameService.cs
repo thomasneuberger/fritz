@@ -1,4 +1,5 @@
 using FritzApp.Models;
+using Microsoft.Extensions.Localization;
 
 namespace FritzApp.Services;
 
@@ -6,17 +7,25 @@ public class GameService
 {
     private const int BoardSize = 5;
     private const int WinLength = 3;
+    private readonly IStringLocalizer<GameService> _localizer;
 
     public Cell[,] Board { get; private set; } = new Cell[BoardSize, BoardSize];
     public Player CurrentPlayer { get; private set; } = Player.X;
     public GameState State { get; private set; } = GameState.InProgress;
     public Player? Winner { get; private set; }
     public Player? FirstRowPlayer { get; private set; }  // Player who achieved first row of 3
-    public string StatusMessage { get; private set; } = "Player X's turn";
+    public string StatusMessage { get; private set; } = string.Empty;
 
-    public GameService()
+    public GameService(IStringLocalizer<GameService> localizer)
     {
+        _localizer = localizer;
         InitializeBoard();
+        UpdateStatusMessage();
+    }
+    
+    private void UpdateStatusMessage()
+    {
+        StatusMessage = _localizer["PlayerTurn", CurrentPlayer];
     }
 
     private void InitializeBoard()
@@ -37,7 +46,7 @@ public class GameService
         State = GameState.InProgress;
         Winner = null;
         FirstRowPlayer = null;
-        StatusMessage = "Player X's turn";
+        StatusMessage = _localizer["PlayerTurn", CurrentPlayer];
     }
 
     public bool MakeMove(int row, int col)
@@ -59,7 +68,7 @@ public class GameService
                 State = GameState.FirstRowAchieved;
                 FirstRowPlayer = CurrentPlayer;
                 SwitchPlayer();
-                StatusMessage = $"Player {CurrentPlayer} has one more move to tie!";
+                StatusMessage = _localizer["PlayerFinalMove", CurrentPlayer];
                 return true;
             }
             else if (State == GameState.FirstRowAchieved)
@@ -67,7 +76,7 @@ public class GameService
                 // Opponent also achieved 3 in a row - opponent wins!
                 State = GameState.GameOver;
                 Winner = CurrentPlayer;
-                StatusMessage = $"Player {CurrentPlayer} wins by achieving 3 in a row after opponent!";
+                StatusMessage = _localizer["PlayerWinsAfterOpponent", CurrentPlayer];
                 return true;
             }
         }
@@ -77,7 +86,7 @@ public class GameService
         {
             State = GameState.GameOver;
             Winner = FirstRowPlayer;
-            StatusMessage = $"Player {Winner} wins!";
+            StatusMessage = _localizer["PlayerWins", Winner!.Value];
             return true;
         }
 
@@ -85,13 +94,13 @@ public class GameService
         if (IsBoardFull())
         {
             State = GameState.GameOver;
-            StatusMessage = "It's a draw!";
+            StatusMessage = _localizer["Draw"];
             return true;
         }
 
         // Continue game
         SwitchPlayer();
-        StatusMessage = $"Player {CurrentPlayer}'s turn";
+        StatusMessage = _localizer["PlayerTurn", CurrentPlayer];
         return true;
     }
 
@@ -174,5 +183,36 @@ public class GameService
             }
         }
         return true;
+    }
+    
+    public void RefreshStatusMessage()
+    {
+        // Refresh the status message in the current language
+        if (State == GameState.GameOver)
+        {
+            if (Winner != null)
+            {
+                if (FirstRowPlayer != null && Winner != FirstRowPlayer)
+                {
+                    StatusMessage = _localizer["PlayerWinsAfterOpponent", Winner.Value];
+                }
+                else
+                {
+                    StatusMessage = _localizer["PlayerWins", Winner.Value];
+                }
+            }
+            else
+            {
+                StatusMessage = _localizer["Draw"];
+            }
+        }
+        else if (State == GameState.FirstRowAchieved)
+        {
+            StatusMessage = _localizer["PlayerFinalMove", CurrentPlayer];
+        }
+        else
+        {
+            StatusMessage = _localizer["PlayerTurn", CurrentPlayer];
+        }
     }
 }

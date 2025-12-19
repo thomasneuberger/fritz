@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Game UI -->
+  <data name="GameTitle" xml:space="preserve">
+    <value>Fritz</value>
+  </data>
+  <data name="NewGame" xml:space="preserve">
+    <value>Neues Spiel</value>
+  </data>
+  <data name="Rules" xml:space="preserve">
+    <value>📖 Regeln</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>📱 QR-Code</value>
+  </data>
+  
+  <!-- Game Status Messages -->
+  <data name="PlayerTurn" xml:space="preserve">
+    <value>Spieler {0} ist am Zug</value>
+  </data>
+  <data name="PlayerFinalMove" xml:space="preserve">
+    <value>Spieler {0} hat noch einen Zug für ein Unentschieden!</value>
+  </data>
+  <data name="PlayerWinsAfterOpponent" xml:space="preserve">
+    <value>Spieler {0} gewinnt durch 3 in einer Reihe nach dem Gegner!</value>
+  </data>
+  <data name="PlayerWins" xml:space="preserve">
+    <value>Spieler {0} gewinnt!</value>
+  </data>
+  <data name="Draw" xml:space="preserve">
+    <value>Unentschieden!</value>
+  </data>
+  
+  <!-- Rules Dialog -->
+  <data name="GameRules" xml:space="preserve">
+    <value>Spielregeln</value>
+  </data>
+  <data name="BoardSize" xml:space="preserve">
+    <value>📏 Spielfeldgröße</value>
+  </data>
+  <data name="BoardSizeDescription" xml:space="preserve">
+    <value>5×5 Gitter (anstelle des traditionellen 3×3)</value>
+  </data>
+  <data name="WinCondition" xml:space="preserve">
+    <value>🎯 Gewinnbedingung</value>
+  </data>
+  <data name="WinConditionDescription" xml:space="preserve">
+    <value>Erreiche 3 Symbole in einer Reihe (horizontal, vertikal oder diagonal)</value>
+  </data>
+  <data name="SpecialFritzRule" xml:space="preserve">
+    <value>⚡ Spezielle Fritz-Regel</value>
+  </data>
+  <data name="SpecialFritzRuleDescription" xml:space="preserve">
+    <value>Wenn ein Spieler zuerst 3 in einer Reihe erreicht, erhält der Gegner einen letzten Zug:</value>
+  </data>
+  <data name="OpponentWinsCondition" xml:space="preserve">
+    <value>Wenn der Gegner ebenfalls 3 in einer Reihe erreicht, <strong>gewinnt der Gegner</strong></value>
+  </data>
+  <data name="FirstPlayerWinsCondition" xml:space="preserve">
+    <value>Wenn der Gegner keine 3 in einer Reihe erreicht, <strong>gewinnt der erste Spieler</strong></value>
+  </data>
+  
+  <!-- QR Code Dialog -->
+  <data name="ScanQrCode" xml:space="preserve">
+    <value>QR-Code scannen</value>
+  </data>
+  
+  <!-- Not Found Page -->
+  <data name="PageNotFound" xml:space="preserve">
+    <value>Seite nicht gefunden</value>
+  </data>
+  <data name="PageNotFoundMessage" xml:space="preserve">
+    <value>Entschuldigung, unter dieser Adresse gibt es nichts.</value>
+  </data>
+  
+  <!-- Language Selector -->
+  <data name="Language" xml:space="preserve">
+    <value>🌐 Sprache</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>Englisch</value>
+  </data>
+  <data name="German" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+</root>
