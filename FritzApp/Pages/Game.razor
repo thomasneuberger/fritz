@@ -2,12 +2,17 @@
 @using FritzApp.Models
 @using FritzApp.Services
 @using FritzApp.Components
+@using FritzApp.Resources
+@using Microsoft.Extensions.Localization
 @inject GameService GameService
+@inject IStringLocalizer<Localizations> Localizer
+@inject CultureService CultureService
+@implements IDisposable
 
 <PageTitle>Fritz Game</PageTitle>
 
 <div class="game-container">
-    <h1 class="game-title">Fritz</h1>
+    <h1 class="game-title">@Localizer["GameTitle"]</h1>
     
     <div class="status-message">
         @GameService.StatusMessage
@@ -33,9 +38,10 @@
     </div>
 
     <div class="button-container">
-        <button class="new-game-btn" @onclick="NewGame">New Game</button>
-        <button class="rules-btn" @onclick="ShowRules">📖 Rules</button>
-        <button class="qr-code-btn" @onclick="ShowQrCode">📱 QR Code</button>
+        <button class="new-game-btn" @onclick="NewGame">@Localizer["NewGame"]</button>
+        <button class="rules-btn" @onclick="ShowRules">@Localizer["Rules"]</button>
+        <button class="qr-code-btn" @onclick="ShowQrCode">@Localizer["QrCode"]</button>
+        <LanguageSelector />
     </div>
 </div>
 
@@ -49,6 +55,18 @@
     protected override void OnInitialized()
     {
         GameService.NewGame();
+        CultureService.CultureChanged += OnCultureChanged;
+    }
+    
+    private void OnCultureChanged()
+    {
+        GameService.RefreshStatusMessage();
+        StateHasChanged();
+    }
+    
+    public void Dispose()
+    {
+        CultureService.CultureChanged -= OnCultureChanged;
     }
 
     private void OnCellClick(int row, int col)

@@ -1,12 +1,15 @@
 @using QRCoder
+@using FritzApp.Resources
+@using Microsoft.Extensions.Localization
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<Localizations> Localizer
 
 @if (IsVisible)
 {
     <div class="qr-dialog-overlay" @onclick="Close">
         <div class="qr-dialog-content" @onclick:stopPropagation="true">
             <div class="qr-dialog-header">
-                <h2>Scan QR Code</h2>
+                <h2>@Localizer["ScanQrCode"]</h2>
                 <button class="close-button" @onclick="Close">✕</button>
             </div>
             <div class="qr-dialog-body">

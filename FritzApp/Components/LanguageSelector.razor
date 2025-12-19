@@ -1,0 +1,66 @@
+@using FritzApp.Services
+@using FritzApp.Resources
+@using Microsoft.Extensions.Localization
+@inject CultureService CultureService
+@inject IStringLocalizer<Localizations> Localizer
+@inject NavigationManager Navigation
+
+<div class="language-selector">
+    <button class="language-btn" @onclick="ToggleLanguageMenu">
+        @Localizer["Language"]
+    </button>
+    
+    @if (showMenu)
+    {
+        <div class="language-menu">
+            <button class="language-option @(IsCurrentLanguage("en") ? "active" : "")" 
+                    @onclick="SetEnglish">
+                @Localizer["English"]
+            </button>
+            <button class="language-option @(IsCurrentLanguage("de") ? "active" : "")" 
+                    @onclick="SetGerman">
+                @Localizer["German"]
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    private bool showMenu = false;
+    private string currentCulture = "en";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        currentCulture = await CultureService.GetCultureAsync();
+    }
+    
+    private void ToggleLanguageMenu()
+    {
+        showMenu = !showMenu;
+    }
+    
+    private async Task SetEnglish()
+    {
+        await SetLanguage("en");
+    }
+    
+    private async Task SetGerman()
+    {
+        await SetLanguage("de");
+    }
+    
+    private async Task SetLanguage(string culture)
+    {
+        await CultureService.SetCultureAsync(culture);
+        currentCulture = culture;
+        showMenu = false;
+        
+        // Force a page reload to apply the new culture
+        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+    }
+    
+    private bool IsCurrentLanguage(string culture)
+    {
+        return currentCulture == culture;
+    }
+}
