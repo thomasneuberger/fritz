@@ -187,12 +187,12 @@ cat > managed-cert-role.json <<EOF
     "Microsoft.App/managedEnvironments/read"
   ],
   "AssignableScopes": [
-    "/subscriptions/<subscription-id>/resourceGroups/<environment-resource-group>"
+    "/subscriptions/<subscription-id>"
   ]
 }
 EOF
 
-# Create the custom role
+# Create the custom role at subscription level for reusability
 az role definition create --role-definition managed-cert-role.json
 
 # Assign the custom role to the service principal
@@ -202,7 +202,7 @@ az role assignment create \
   --scope /subscriptions/<subscription-id>/resourceGroups/<environment-resource-group>
 ```
 
-**Note**: When using custom domains with managed certificates, the certificates must be created in the environment's resource group (not the app's resource group). This is an Azure platform requirement. The built-in "Container Apps Contributor" role does NOT include permissions for managing certificates.
+**Note**: When using custom domains with managed certificates, the certificates must be created in the environment's resource group (not the app's resource group). This is an Azure platform requirement. The built-in "Container Apps Contributor" role mentioned earlier does NOT include permissions for managing certificates, which is why you need either the broader "Contributor" role or a custom role.
 
 ## Manual Deployment
 
