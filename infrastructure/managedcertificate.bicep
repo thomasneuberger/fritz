@@ -1,3 +1,8 @@
+// Managed certificate for Azure Container Apps custom domain
+// IMPORTANT: This module must be deployed in the Container Apps Environment's resource group,
+// as managed certificates are child resources of the environment and cannot be created
+// in a different resource group. This is an Azure platform constraint.
+
 @description('Name of the Container Apps Environment')
 param containerAppsEnvironmentName string
 

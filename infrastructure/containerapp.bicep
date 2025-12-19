@@ -42,17 +42,6 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01'
   scope: resourceGroup(containerAppsEnvironmentResourceGroup)
 }
 
-// Managed certificate for custom domain (only created if customDomain is provided)
-module managedCertificate 'managedcertificate.bicep' = if (!empty(customDomain)) {
-  name: 'managedCertificateDeployment'
-  scope: resourceGroup(containerAppsEnvironmentResourceGroup)
-  params: {
-    containerAppsEnvironmentName: containerAppsEnvironmentName
-    customDomain: customDomain
-    location: location
-  }
-}
-
 resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppName
   location: location
@@ -69,11 +58,13 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             weight: 100
           }
         ]
+        // Custom domain configuration with automatic certificate management
+        // Using bindingType 'Auto' allows Azure to automatically create and bind the managed certificate
+        // This solves the circular dependency issue where the certificate requires the domain to exist first
         customDomains: !empty(customDomain) ? [
           {
             name: customDomain
-            certificateId: managedCertificate.outputs.certificateId
-            bindingType: 'SniEnabled'
+            bindingType: 'Auto'
           }
         ] : []
       }
@@ -118,6 +109,24 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
       }
     }
   }
+}
+
+// Managed certificate for custom domain (only created if customDomain is provided)
+// NOTE: The certificate MUST be deployed in the Container Apps Environment's resource group,
+// not the app's resource group. This is an Azure platform requirement for managed certificates.
+// The certificate is created AFTER the container app to ensure the custom domain exists first.
+// With bindingType 'Auto', Azure automatically binds the certificate once it's provisioned.
+module managedCertificate 'managedcertificate.bicep' = if (!empty(customDomain)) {
+  name: 'managedCertificateDeployment'
+  scope: resourceGroup(containerAppsEnvironmentResourceGroup)
+  params: {
+    containerAppsEnvironmentName: containerAppsEnvironmentName
+    customDomain: customDomain
+    location: location
+  }
+  dependsOn: [
+    containerApp
+  ]
 }
 
 @description('FQDN of the Container App')
