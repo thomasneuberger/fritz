@@ -1,0 +1,45 @@
+@if (IsVisible)
+{
+    <div class="rules-dialog-overlay" @onclick="Close">
+        <div class="rules-dialog-content" @onclick:stopPropagation="true">
+            <div class="rules-dialog-header">
+                <h2>Game Rules</h2>
+                <button class="close-button" @onclick="Close">✕</button>
+            </div>
+            <div class="rules-dialog-body">
+                <div class="rule-section">
+                    <h3>📏 Board Size</h3>
+                    <p>5×5 grid (instead of the traditional 3×3)</p>
+                </div>
+                
+                <div class="rule-section">
+                    <h3>🎯 Win Condition</h3>
+                    <p>Get 3 symbols in a row (horizontally, vertically, or diagonally)</p>
+                </div>
+                
+                <div class="rule-section special-rule">
+                    <h3>⚡ Special Fritz Rule</h3>
+                    <p>When a player achieves 3 in a row first, the opponent gets one final move:</p>
+                    <ul>
+                        <li>If the opponent also achieves 3 in a row, <strong>the opponent wins</strong></li>
+                        <li>If the opponent fails to achieve 3 in a row, <strong>the first player wins</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsVisibleChanged { get; set; }
+
+    private async Task Close()
+    {
+        IsVisible = false;
+        await IsVisibleChanged.InvokeAsync(IsVisible);
+    }
+}
