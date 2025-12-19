@@ -82,7 +82,7 @@ The Container App supports custom domains with automatic HTTPS using Azure-manag
 
 ### How It Works: Automatic Certificate Management
 
-The deployment uses Azure's `bindingType: 'Auto'` feature (available in API version 2024-03-01 and later) to solve the circular dependency problem:
+The deployment uses Azure's `bindingType: 'Auto'` feature (available in API version 2024-03-01 and later, using 2025-01-01) to solve the circular dependency problem:
 
 1. **First**, the Container App is deployed with the custom domain configured using `bindingType: 'Auto'`
 2. **Then**, the managed certificate is created in the environment's resource group
