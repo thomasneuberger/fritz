@@ -13,12 +13,12 @@ param customDomain string
 param location string
 
 // Reference to the existing Container Apps Environment
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' existing = {
+resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2025-07-01' existing = {
   name: containerAppsEnvironmentName
 }
 
 // Managed certificate for custom domain
-resource managedCertificate 'Microsoft.App/managedEnvironments/managedCertificates@2024-03-01' = {
+resource managedCertificate 'Microsoft.App/managedEnvironments/managedCertificates@2025-07-01' = {
   name: '${replace(customDomain, '.', '-')}-certificate'
   parent: containerAppsEnvironment
   location: location

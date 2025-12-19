@@ -37,12 +37,12 @@ param concurrentRequests int = 10
 param customDomain string = ''
 
 // Reference to the existing Container Apps Environment
-resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' existing = {
+resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2025-07-01' existing = {
   name: containerAppsEnvironmentName
   scope: resourceGroup(containerAppsEnvironmentResourceGroup)
 }
 
-resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
+resource containerApp 'Microsoft.App/containerApps@2025-07-01' = {
   name: containerAppName
   location: location
   properties: {
