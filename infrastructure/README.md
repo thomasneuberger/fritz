@@ -80,6 +80,16 @@ The Container App supports custom domains with automatic HTTPS using Azure-manag
    - The certificate is automatically renewed before expiration
    - HTTPS will be enabled automatically once the certificate is provisioned
 
+### How It Works: Automatic Certificate Management
+
+The deployment uses Azure's `bindingType: 'Auto'` feature (available in API version 2024-03-01 and later) to solve the circular dependency problem:
+
+1. **First**, the Container App is deployed with the custom domain configured using `bindingType: 'Auto'`
+2. **Then**, the managed certificate is created in the environment's resource group
+3. **Finally**, Azure automatically binds the certificate to the custom domain once it's provisioned
+
+This approach eliminates the traditional chicken-and-egg problem where you needed the domain to exist before creating the certificate, but also needed the certificate to exist before binding it to the domain. With `bindingType: 'Auto'`, Azure handles the binding automatically once both resources exist.
+
 ### Managed Certificate Resource Placement
 
 **Important**: Managed certificates for Azure Container Apps are created as child resources of the Container Apps Environment and **must be in the same resource group as the environment**, not the Container App itself. This is an Azure platform requirement.
