@@ -95,10 +95,15 @@ The Container App supports custom domains with automatic HTTPS using Azure-manag
 
 **Required Permissions for Cross-Resource-Group Deployments:**
 
-When the Container App is in a different resource group from the Container Apps Environment, the service principal needs:
-- **Contributor role** on the environment's resource group (to create and manage the managed certificate; this also includes read permissions for referencing the environment)
+When the Container App is in a different resource group from the Container Apps Environment, the service principal needs permissions to create managed certificates in the environment's resource group. You have two options:
 
-See the "Azure Setup" section below for detailed permission configuration.
+1. **Built-in Contributor role** (simpler, but provides broader access to the resource group)
+2. **Custom role** with specific permissions (recommended for production, follows least privilege principle):
+   - `Microsoft.App/managedEnvironments/managedCertificates/write`
+   - `Microsoft.App/managedEnvironments/managedCertificates/read`
+   - `Microsoft.App/managedEnvironments/read`
+
+See the "Azure Setup" section below for detailed permission configuration with both options.
 
 ### Important Notes
 
@@ -154,6 +159,8 @@ The service principal needs the following permissions:
 
 If the Container Apps Environment is in a different resource group than where you're deploying the Container App, grant additional permissions:
 
+**Option 1: Using Built-in Contributor Role (Simpler)**
+
 ```bash
 # Grant Contributor access to the Container Apps Environment resource group
 # This is required when using custom domains with managed certificates
@@ -163,7 +170,39 @@ az role assignment create \
   --scope /subscriptions/<subscription-id>/resourceGroups/<environment-resource-group>
 ```
 
-**Note**: The Contributor role on the environment's resource group is necessary when using custom domains with managed certificates, as the certificates must be created in the environment's resource group (not the app's resource group). This is an Azure platform requirement.
+**Option 2: Using Custom Role (More Secure - Recommended)**
+
+For better security with least privilege access, create a custom role with only the necessary permissions:
+
+```bash
+# Create a custom role definition file (managed-cert-role.json)
+cat > managed-cert-role.json <<EOF
+{
+  "Name": "Container Apps Managed Certificate Manager",
+  "IsCustom": true,
+  "Description": "Allows management of managed certificates in Container Apps Environments",
+  "Actions": [
+    "Microsoft.App/managedEnvironments/managedCertificates/write",
+    "Microsoft.App/managedEnvironments/managedCertificates/read",
+    "Microsoft.App/managedEnvironments/read"
+  ],
+  "AssignableScopes": [
+    "/subscriptions/<subscription-id>/resourceGroups/<environment-resource-group>"
+  ]
+}
+EOF
+
+# Create the custom role
+az role definition create --role-definition managed-cert-role.json
+
+# Assign the custom role to the service principal
+az role assignment create \
+  --assignee <app-id> \
+  --role "Container Apps Managed Certificate Manager" \
+  --scope /subscriptions/<subscription-id>/resourceGroups/<environment-resource-group>
+```
+
+**Note**: When using custom domains with managed certificates, the certificates must be created in the environment's resource group (not the app's resource group). This is an Azure platform requirement. The built-in "Container Apps Contributor" role does NOT include permissions for managing certificates.
 
 ## Manual Deployment
 
