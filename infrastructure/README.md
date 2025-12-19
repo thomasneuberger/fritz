@@ -26,7 +26,11 @@ The infrastructure consists of:
 
 ## Required GitHub Environment Secrets
 
-For the CD workflow to deploy to Azure, configure these secrets in your GitHub repository under the `development` environment (Settings → Environments → development):
+The CD workflow deploys to two environments: `development` and `production`. Each environment requires its own set of secrets to be configured in GitHub (Settings → Environments).
+
+### Development Environment
+
+Configure these secrets in the `development` environment (Settings → Environments → development):
 
 | Secret Name | Description |
 |-------------|-------------|
@@ -39,7 +43,30 @@ For the CD workflow to deploy to Azure, configure these secrets in your GitHub r
 | `AZURE_CONTAINER_ENV_RESOURCE_GROUP` | Resource group containing the Container Apps Environment |
 | `CONTAINER_REGISTRY_USERNAME` | Username for GitHub Container Registry authentication (your GitHub username) |
 | `CONTAINER_REGISTRY_PASSWORD` | Personal Access Token (PAT) for GitHub Container Registry authentication |
+| `CUSTOM_DOMAIN` | (Optional) Custom domain name for the Container App (e.g., fritz-dev.example.com) |
+
+### Production Environment
+
+Configure these secrets in the `production` environment (Settings → Environments → production):
+
+| Secret Name | Description |
+|-------------|-------------|
+| `AZURE_CLIENT_ID` | Azure service principal client ID for OIDC authentication |
+| `AZURE_TENANT_ID` | Azure tenant ID |
+| `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |
+| `AZURE_RESOURCE_GROUP` | Resource group where the Container App will be deployed (typically different from development) |
+| `AZURE_CONTAINER_APP_NAME` | Name for the Container App (typically different from development) |
+| `AZURE_CONTAINER_ENV_NAME` | Name of the existing Container Apps Environment |
+| `AZURE_CONTAINER_ENV_RESOURCE_GROUP` | Resource group containing the Container Apps Environment |
+| `CONTAINER_REGISTRY_USERNAME` | Username for GitHub Container Registry authentication (your GitHub username) |
+| `CONTAINER_REGISTRY_PASSWORD` | Personal Access Token (PAT) for GitHub Container Registry authentication |
 | `CUSTOM_DOMAIN` | (Optional) Custom domain name for the Container App (e.g., fritz.example.com) |
+
+**Important:** The `production` environment should be configured with **required reviewers** to ensure that deployments to production require approval. To configure this:
+1. Go to Settings → Environments → production
+2. Check "Required reviewers"
+3. Add one or more reviewers who must approve before deployment proceeds
+4. Optionally set a wait timer to add a delay before deployment can proceed
 
 ### Setting up Container Registry Authentication
 
@@ -150,12 +177,24 @@ az ad sp create-for-rbac \
 
 # Configure federated credentials for GitHub
 # Replace <app-id> with the appId value from the service principal creation output
+
+# For development environment
 az ad app federated-credential create \
   --id <app-id> \
   --parameters '{
-    "name": "fritz-github-actions",
+    "name": "fritz-github-actions-dev",
     "issuer": "https://token.actions.githubusercontent.com",
     "subject": "repo:<your-github-org>/<your-repo-name>:environment:development",
+    "audiences": ["api://AzureADTokenExchange"]
+  }'
+
+# For production environment
+az ad app federated-credential create \
+  --id <app-id> \
+  --parameters '{
+    "name": "fritz-github-actions-prod",
+    "issuer": "https://token.actions.githubusercontent.com",
+    "subject": "repo:<your-github-org>/<your-repo-name>:environment:production",
     "audiences": ["api://AzureADTokenExchange"]
   }'
 ```
