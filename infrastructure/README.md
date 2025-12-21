@@ -21,7 +21,7 @@ The infrastructure consists of:
 - **Hosting**: Runs the Fritz Blazor WebAssembly app with nginx
 - **Scaling**: Configured with autoscaling
   - Minimum replicas: 0 (can scale to zero for cost optimization)
-  - Maximum replicas: 10
+  - Maximum replicas: 1
   - Scaling rules: HTTP-based (concurrent requests per replica)
 
 ## Required GitHub Environment Secrets
@@ -301,7 +301,7 @@ az deployment group create \
 | `location` | Azure region for resources | Resource group location |
 | `containerRegistryServer` | Container registry server | ghcr.io |
 | `minReplicas` | Minimum number of replicas (autoscaling) | 0 |
-| `maxReplicas` | Maximum number of replicas (autoscaling) | 10 |
+| `maxReplicas` | Maximum number of replicas (autoscaling) | 1 |
 | `concurrentRequests` | Concurrent requests per replica for HTTP scaling | 10 |
 | `customDomain` | Custom domain name for the Container App | (empty - uses default domain) |
 
@@ -309,7 +309,7 @@ az deployment group create \
 
 The Container App is configured with HTTP-based autoscaling:
 - **Minimum instances**: 0 (can scale to zero to save costs when no traffic)
-- **Maximum instances**: 10
+- **Maximum instances**: 1
 - **Scaling trigger**: HTTP concurrent requests
   - Default: 10 concurrent requests per replica
   - When traffic exceeds this threshold, new replicas are automatically created

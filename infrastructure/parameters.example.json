@@ -30,7 +30,7 @@
       "value": 0
     },
     "maxReplicas": {
-      "value": 10
+      "value": 1
     },
     "concurrentRequests": {
       "value": 10
