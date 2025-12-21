@@ -28,7 +28,7 @@ param containerRegistryPassword string
 param minReplicas int = 0
 
 @description('Maximum replica count for autoscaling')
-param maxReplicas int = 10
+param maxReplicas int = 1
 
 @description('Concurrent requests per replica for HTTP scaling')
 param concurrentRequests int = 10
